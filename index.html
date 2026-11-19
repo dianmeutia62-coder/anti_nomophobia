@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Game Eksplorasi Diri (DCM) - BK Kelas 10</title>
+  <style>
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f8ff; color: #333; margin: 0; padding: 20px; display: flex; justify-content: center; }
+    .container { max-width: 600px; width: 100%; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+    h1, h2, h3 { color: #2c3e50; text-align: center; }
+    .hidden { display: none; }
+    .btn { background: #3498db; color: white; font-weight: bold; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; width: 100%; font-size: 16px; margin-top: 15px; }
+    .btn:hover { background: #2980b9; }
+    input[type="text"] { width: 100%; padding: 12px; margin-bottom: 15px; border: 2px solid #ecf0f1; border-radius: 8px; box-sizing: border-box; font-size: 16px; }
+    .question-group { margin-bottom: 25px; background: #f9f9f9; padding: 15px; border-radius: 10px; }
+    .question-group h3 { text-align: left; font-size: 18px; margin-top: 0; border-bottom: 2px solid #ecf0f1; padding-bottom: 5px;}
+    label { display: block; margin: 8px 0; padding: 12px; background: white; border: 2px solid #ecf0f1; border-radius: 8px; cursor: pointer; transition: 0.2s; }
+    label:hover { border-color: #3498db; background: #f1f8ff; }
+    input[type="checkbox"] { margin-right: 10px; transform: scale(1.2); }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Eksplorasi Diri Kelas 10 🚀</h1>
+
+    <!-- Layar 1: Identitas -->
+    <div id="introScreen">
+      <p style="text-align:center;">Halo! Yuk kenali apa saja yang sedang jadi beban pikiranmu. Data ini rahasia dan hanya diketahui oleh Guru BK.</p>
+      <input type="text" id="nama" placeholder="Nama Lengkap" required>
+      <input type="text" id="kelas" placeholder="Kelas (Contoh: X IPA 1)" required>
+      <button class="btn" onclick="startGame()">Mulai Cek Masalah</button>
+    </div>
+
+    <!-- Layar 2: Game Checklist -->
+    <div id="gameScreen" class="hidden">
+      <p style="text-align:center; margin-bottom:20px;">Centang pernyataan yang <b>paling sesuai</b> dengan keadaanmu saat ini:</p>
+
+      <div class="question-group">
+        <h3>📚 Bidang Belajar</h3>
+        <label><input type="checkbox" class="belajar" value="Sulit konsentrasi"> Sulit konsentrasi saat belajar di kelas</label>
+        <label><input type="checkbox" class="belajar" value="Tugas menumpuk"> Stres karena tugas sekolah menumpuk</label>
+        <label><input type="checkbox" class="belajar" value="Sulit paham materi"> Merasa tertinggal dan sulit paham materi baru</label>
+      </div>
+
+      <div class="question-group">
+        <h3>🤝 Bidang Sosial</h3>
+        <label><input type="checkbox" class="sosial" value="Canggung adaptasi"> Masih canggung beradaptasi di lingkungan SMA</label>
+        <label><input type="checkbox" class="sosial" value="Konflik dengan teman"> Sedang ada konflik/salah paham dengan teman</label>
+      </div>
+
+      <div class="question-group">
+        <h3>🧠 Bidang Pribadi</h3>
+        <label><input type="checkbox" class="pribadi" value="Overthinking"> Sering overthinking dan cemas memikirkan sesuatu</label>
+        <label><input type="checkbox" class="pribadi" value="Kurang Percaya Diri"> Kurang percaya diri (insecure) dengan diri sendiri</label>
+      </div>
+
+      <div class="question-group">
+        <h3>🎯 Bidang Karir</h3>
+        <label><input type="checkbox" class="karir" value="Bingung penjurusan"> Bingung memilih mata pelajaran pilihan/penjurusan</label>
+        <label><input type="checkbox" class="karir" value="Belum ada cita-cita"> Sama sekali belum punya gambaran cita-cita</label>
+      </div>
+
+      <button class="btn" id="submitBtn" onclick="submitData()">Kirim & Lihat Hasil</button>
+    </div>
+
+    <!-- Layar 3: Penutup -->
+    <div id="outroScreen" class="hidden">
+      <h2>Luar Biasa! 🎉</h2>
+      <p style="text-align:center;">Terima kasih sudah jujur pada dirimu sendiri. Datamu sudah tersimpan di ruang BK.</p>
+      <p style="text-align:center;">Ingat, punya masalah itu wajar. Jangan ragu menemui Guru BK jika kamu butuh teman diskusi yang aman dan nyaman ya!</p>
+      <button class="btn" onclick="location.reload()">Kembali ke Awal</button>
+    </div>
+  </div>
+
+  <script>
+    // URL Google Apps Script milik Anda sudah dimasukkan di sini:
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbxk_FPGwAX7rk0v8HzP0LRDpHtj-huTF6YPaVnuL36CRwo3d6SGVpzpA1epojYWds9L/exec';
+
+    function startGame() {
+      const nama = document.getElementById('nama').value;
+      const kelas = document.getElementById('kelas').value;
+      if(!nama || !kelas) {
+        alert('Tolong isi nama dan kelas terlebih dahulu ya!');
+        return;
+      }
+      document.getElementById('introScreen').classList.add('hidden');
+      document.getElementById('gameScreen').classList.remove('hidden');
+    }
+
+    function getCheckedValues(className) {
+      const checkboxes = document.querySelectorAll('.' + className + ':checked');
+      let values = [];
+      checkboxes.forEach((cb) => values.push(cb.value));
+      return values.join(', ') || 'Tidak ada masalah';
+    }
+
+    function submitData() {
+      const btn = document.getElementById('submitBtn');
+      btn.innerHTML = '⏳ Mengirim data...';
+      btn.disabled = true;
+
+      const data = {
+        nama: document.getElementById('nama').value,
+        kelas: document.getElementById('kelas').value,
+        belajar: getCheckedValues('belajar'),
+        sosial: getCheckedValues('sosial'),
+        pribadi: getCheckedValues('pribadi'),
+        karir: getCheckedValues('karir')
+      };
+
+      fetch(scriptURL, {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' }
+      })
+      .then(response => response.json())
+      .then(data => {
+        document.getElementById('gameScreen').classList.add('hidden');
+        document.getElementById('outroScreen').classList.remove('hidden');
+      })
+      .catch(error => {
+        console.error('Error!', error.message);
+        alert('Gagal mengirim data. Pastikan koneksi internet stabil.');
+        btn.innerHTML = 'Kirim & Lihat Hasil';
+        btn.disabled = false;
+      });
+    }
+  </script>
+</body>
+</html>
